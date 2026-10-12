@@ -66,11 +66,53 @@ This is a small sample. A larger test is planned.
 
 
 
-\## Next steps
 
-\- Week 2: collect Egyptian Arabic voice samples.
 
-\- Week 3: Piper for offline speech and the emergency alert message.
+\## Week 3 - Alert audio, earcons, stereo output, recognition measurements
 
-\- Week 4: tune recognition for Egyptian accents and expand the test set.
+\- `alerts.py`: 15 fixed alert phrases (Arabic and English), including "Are you OK?" and the fall alarm.
+
+\- `generate\_alerts.py`: generates one wav file per phrase (needs internet once, gTTS). Playback is fully local. These are TTS voices, not human recordings.
+
+\- `generate\_earcons.py`: 5 short tones, all under 200 ms (100, 160, 155, 180, 150 ms).
+
+\- `audio\_out.py`: stereo playback (side from -1 left to 1 right) with one output stream kept open, because the laptop sound device swallowed short sounds when a stream was opened for each sound.
+
+\- `compare\_configs.py`, `measure\_noise.py`: recognition measurements on the s01 samples.
+
+
+
+\### Recognition results (faster-whisper small, int8, laptop CPU)
+
+Test set: 1 speaker (s01), 20 recordings. The hint contains the 20 expected phrases (closed vocabulary).
+
+
+
+| Setting | Correct |
+
+|---|---|
+
+| no hint | 0 / 20 |
+
+| hint | 13 / 20 |
+
+| hint + VAD | 14 / 20 (70%) |
+
+
+
+With added noise (hint + VAD): clean 14/20, 20 dB 14/20, 10 dB 10/20, 5 dB 10/20.
+
+Average time per 5 s recording: about 2 to 4 s on the laptop.
+
+
+
+\### Limits
+
+\- Noise is synthetic white noise, not recorded street noise.
+
+\- One speaker and 20 phrases only, so the numbers are rough. The target of 90% (R14) is not reached yet; the fixed command grammar is planned for week 4.
+
+\- Timing was measured on the laptop, not on the Raspberry Pi.
+
+\- Stereo was tested on laptop headphones only, not on the USB sound card and wired headphones.
 
