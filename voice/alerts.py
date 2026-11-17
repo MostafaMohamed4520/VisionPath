@@ -16,4 +16,10 @@ ALERTS = [
     ("system_fault", "يوجد عطل في النظام", "System fault"),
     ("are_you_ok", "هل أنت بخير؟", "Are you OK?"),
     ("fall_alarm", "تم رصد سقوط، جاري طلب المساعدة", "Fall detected, calling for help"),
+    ("fall_cancelled", "تم إلغاء الإنذار، الحمد لله على سلامتك", "Alarm cancelled, glad you are OK"),
+    ("calling_ambulance", "جاري الاتصال بالإسعاف", "Calling an ambulance"),
+    ("choose_contact", "من تريد أن أتصل به؟", "Who should I call?"),
+    ("not_understood", "لم أفهم، حاول مرة أخرى", "I did not understand, please try again"),
+    ("confirm_ambulance", "هل تريد الاتصال بالإسعاف؟ قل نعم أو لا", "Do you want to call an ambulance? Say yes or no"),
+    ("cancelled", "تم الإلغاء", "Cancelled"),
 ]

@@ -29,7 +29,7 @@ for row in rows:
     segments, info = model.transcribe(path, language="ar", initial_prompt=hint, vad_filter=True)
     heard = "".join(s.text for s in segments)
 
-    result = grammar.match(heard)
+    result = grammar.match(heard, use_extra=False)
     good = result is not None and result[0] == row["phrase_id"]
     old_good = grammar.normalize(row["text"]) in grammar.normalize(heard)
 

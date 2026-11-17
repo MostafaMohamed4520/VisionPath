@@ -22,7 +22,19 @@ GRAMMAR = [
     ("nav_3", "امشي على طول", "go_straight"),
     ("nav_4", "فين الباب", "find_door"),
 ]
-
+# extra commands for the app and the emergency flow (not part of the measured 16 phrases)
+EXTRA = [
+    ("im_ok_1", "أنا بخير", "im_ok"),
+    ("im_ok_2", "أنا كويس", "im_ok"),
+    ("im_ok_3", "أنا تمام", "im_ok"),
+    ("why_1", "ليه", "why"),
+    ("why_2", "ليه كده", "why"),
+    ("contact_1", "اتصل بحد", "choose_contact"),
+    ("contact_2", "اختار جهة اتصال", "choose_contact"),
+    ("yes_1", "نعم", "yes"),
+    ("yes_2", "أيوه", "yes"),
+    ("no_1", "لا", "no"),
+]
 # below this similarity we say "not understood" instead of guessing
 THRESHOLD = 0.6
 
@@ -35,16 +47,31 @@ def normalize(text):
     return re.sub(r"[^a-z\u0621-\u064a]", "", text)
 
 
-def match(heard):
+def words(text):
+    return [normalize(w) for w in text.split() if normalize(w)]
+
+
+def contains(heard_words, phrase_words):
+    n = len(phrase_words)
+    for i in range(len(heard_words) - n + 1):
+        if heard_words[i:i + n] == phrase_words:
+            return True
+    return False
+
+
+def match(heard, use_extra=True):
     """Return (phrase_id, intent, score) of the closest phrase, or None."""
     h = normalize(heard)
     if h == "":
         return None
+    hw = words(heard)
+    phrases = GRAMMAR + EXTRA if use_extra else GRAMMAR
     best = None
-    for phrase_id, text, intent in GRAMMAR:
+    for phrase_id, text, intent in phrases:
         p = normalize(text)
         score = SequenceMatcher(None, h, p).ratio()
-        if p in h:
+        # the whole phrase must appear as whole words, not inside another word
+        if contains(hw, words(text)):
             score = max(score, 0.95)
         if best is None or score > best[2]:
             best = (phrase_id, intent, score)
