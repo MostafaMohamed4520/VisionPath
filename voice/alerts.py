@@ -29,3 +29,7 @@ ALERTS = [
 from reasons import REASONS
 for key in REASONS:
     ALERTS.append(("why_" + key, REASONS[key][0], REASONS[key][1]))
+
+from first_run_phrases import PHRASES
+for key in PHRASES:
+    ALERTS.append(("fr_" + key, PHRASES[key][0], PHRASES[key][1]))
