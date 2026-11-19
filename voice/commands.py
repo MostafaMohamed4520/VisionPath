@@ -14,13 +14,16 @@ CONFIRM_SECONDS = 8   # how long we wait for "yes" or "no"
 
 class CommandHandler:
     def __init__(self, manager, lang="ar", on_cancel_fall=None,
-                 on_call_ambulance=None, on_choose_contact=None):
+                 on_call_ambulance=None, on_choose_contact=None,
+                 on_wellbeing_ok=None):
         self.manager = manager
         self.lang = lang
         self.on_cancel_fall = on_cancel_fall
         self.on_call_ambulance = on_call_ambulance
         self.on_choose_contact = on_choose_contact
+        self.on_wellbeing_ok = on_wellbeing_ok
         self.fall_alarm_active = False
+        self.wellbeing_active = False      # we asked "are you OK?" and wait for "I'm OK"
         self.last_alert = None             # (alert_id, level, side), used by "why"
         self.waiting_confirm_until = None  # time when the ambulance question expires
 
@@ -28,6 +31,9 @@ class CommandHandler:
         """Use this instead of manager.alert so we remember the last alert."""
         if alert_id == "fall_alarm":
             self.fall_alarm_active = True
+            self.wellbeing_active = False  # a fall is more important than a wellbeing check
+        elif alert_id == "are_you_ok":
+            self.wellbeing_active = True
         self.last_alert = (alert_id, level, side)
         self.manager.alert(alert_id, level, self.lang, side)
 
@@ -61,6 +67,11 @@ class CommandHandler:
                 if self.on_cancel_fall:
                     self.on_cancel_fall()
                 self.manager.alert("fall_cancelled", SYSTEM, self.lang)
+            elif self.wellbeing_active:
+                self.wellbeing_active = False
+                if self.on_wellbeing_ok:
+                    self.on_wellbeing_ok()
+                self.manager.alert("wellbeing_ok", SYSTEM, self.lang)
         elif intent in ("why", "repeat"):
             if self.last_alert:
                 alert_id, level, side = self.last_alert
