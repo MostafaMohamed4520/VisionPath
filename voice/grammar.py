@@ -34,6 +34,8 @@ EXTRA = [
     ("yes_1", "نعم", "yes"),
     ("yes_2", "أيوه", "yes"),
     ("no_1", "لا", "no"),
+    ("ahead_1", "إيه قدامي", "whats_ahead"),
+    ("ahead_2", "في إيه قدامي", "whats_ahead"),
 ]
 # below this similarity we say "not understood" instead of guessing
 THRESHOLD = 0.6

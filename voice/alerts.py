@@ -23,6 +23,7 @@ ALERTS = [
     ("confirm_ambulance", "هل تريد الاتصال بالإسعاف؟ قل نعم أو لا", "Do you want to call an ambulance? Say yes or no"),
     ("cancelled", "تم الإلغاء", "Cancelled"),
     ("wellbeing_ok", "تمام، سعيد إنك بخير", "Great, glad you are OK"),
+    ("nothing_ahead", "لا يوجد شيء أمامك", "Nothing ahead"),
 
 ]
 from reasons import REASONS

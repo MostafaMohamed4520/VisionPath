@@ -15,13 +15,14 @@ CONFIRM_SECONDS = 8   # how long we wait for "yes" or "no"
 class CommandHandler:
     def __init__(self, manager, lang="ar", on_cancel_fall=None,
                  on_call_ambulance=None, on_choose_contact=None,
-                 on_wellbeing_ok=None):
+                 on_wellbeing_ok=None, on_whats_ahead=None):
         self.manager = manager
         self.lang = lang
         self.on_cancel_fall = on_cancel_fall
         self.on_call_ambulance = on_call_ambulance
         self.on_choose_contact = on_choose_contact
         self.on_wellbeing_ok = on_wellbeing_ok
+        self.on_whats_ahead = on_whats_ahead  # returns a list of (alert_id, side)
         self.fall_alarm_active = False
         self.wellbeing_active = False      # we asked "are you OK?" and wait for "I'm OK"
         self.last_alert = None             # (alert_id, level, side), used by "why"
@@ -79,6 +80,17 @@ class CommandHandler:
                 if intent == "why" and "why_" + alert_id in WHY_IDS:
                     alert_id = "why_" + alert_id
                 self.manager.alert(alert_id, level, self.lang, side)
+        elif intent == "whats_ahead":
+            items = []
+            if self.on_whats_ahead:
+                items = self.on_whats_ahead()
+            if not items:
+                self.manager.alert("nothing_ahead", INFO, self.lang)
+            else:
+                # say at most 3 things, one after the other
+                for alert_id, side in items[:3]:
+                    self.manager.alert(alert_id, INFO, self.lang, side)
+                    self.manager.wait_until_done()
         elif intent == "call_ambulance":
             self.manager.alert("confirm_ambulance", EMERGENCY, self.lang)
             # the countdown starts after the question has finished playing
