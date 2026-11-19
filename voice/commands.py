@@ -5,6 +5,9 @@
 import time
 import grammar
 from output_manager import EMERGENCY, SYSTEM, INFO
+from alerts import ALERTS
+
+WHY_IDS = [a[0] for a in ALERTS]   # ids that have an audio file
 
 CONFIRM_SECONDS = 8   # how long we wait for "yes" or "no"
 
@@ -59,9 +62,11 @@ class CommandHandler:
                     self.on_cancel_fall()
                 self.manager.alert("fall_cancelled", SYSTEM, self.lang)
         elif intent in ("why", "repeat"):
-            # for now "why" repeats the last alert; reason code sentences come later
             if self.last_alert:
                 alert_id, level, side = self.last_alert
+                # "why" plays the explanation if we have one, "repeat" says the alert again
+                if intent == "why" and "why_" + alert_id in WHY_IDS:
+                    alert_id = "why_" + alert_id
                 self.manager.alert(alert_id, level, self.lang, side)
         elif intent == "call_ambulance":
             self.manager.alert("confirm_ambulance", EMERGENCY, self.lang)

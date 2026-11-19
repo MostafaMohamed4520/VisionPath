@@ -22,4 +22,8 @@ ALERTS = [
     ("not_understood", "لم أفهم، حاول مرة أخرى", "I did not understand, please try again"),
     ("confirm_ambulance", "هل تريد الاتصال بالإسعاف؟ قل نعم أو لا", "Do you want to call an ambulance? Say yes or no"),
     ("cancelled", "تم الإلغاء", "Cancelled"),
+
 ]
+from reasons import REASONS
+for key in REASONS:
+    ALERTS.append(("why_" + key, REASONS[key][0], REASONS[key][1]))
